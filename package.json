@@ -1,0 +1,24 @@
+{
+  "name": "whiteboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --open --host 0.0.0.0 --port 8888 --config webpack.config.js",
+    "publish": "webpack --mode=production "
+  },
+  "author": "djm",
+  "license": "ISC",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.14.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "easy-drawing-board": "^1.1.0",
+    "pdfjs-dist": "^2.4.456"
+  }
+}
