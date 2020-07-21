@@ -13,8 +13,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 import EasyDrawingBoard from 'easy-drawing-board'
 
 window.onload = function () {
-    let draw = null, draw2 = null;
-    const container = document.getElementsByClassName('container')[0];
+    let draw = null;
+    let pdfBase64Arr = [] // pad数据缓存
     const operations = document.getElementById('operations');
     operations.addEventListener('click', function (e) {
         if (e.target.nodeName !== 'BUTTON') return
@@ -22,6 +22,8 @@ window.onload = function () {
         if (mode === 'clear') {
             draw.clear()
 
+        } else if (mode === 'undo') {
+            draw.undo()
         } else {
             draw.setMode(mode)
 
@@ -52,12 +54,9 @@ window.onload = function () {
             }
         })
     });
-    const options = {
-        container
-    };
-    draw = new EasyDrawingBoard(options);
 
-
+    // draw = new EasyDrawingBoard(options);
+    // window.draw = draw;
     const url = 'Wiki.pdf';
 
     let pdfDoc = null,
@@ -66,7 +65,8 @@ window.onload = function () {
         pageNumIsPending = null;
 
     const scale = 1.5,
-        canvas = document.getElementsByTagName("canvas")[0],
+        // canvas = document.getElementsByTagName("canvas")[0],
+        canvas = document.getElementById("pafjs"),
         ctx = canvas.getContext('2d');
     
     //render the page 
@@ -74,8 +74,6 @@ window.onload = function () {
         pageIsRendering = true;
         //get page
         pdfDoc.getPage(num).then(page => {
-            console.log(page);
-
             const viewport = page.getViewport({ scale });
             canvas.height = viewport.height;
             canvas.width = viewport.width;
@@ -91,8 +89,28 @@ window.onload = function () {
                     renderPage(pageNumIsPending);
                     pageNumIsPending = null;
                 }
-            });
 
+                // EasyDrawingBoard
+                if (!pdfBase64Arr[num - 1]) {
+                    pdfBase64Arr[num - 1] = canvas.toDataURL(`image/png`)
+                }
+                if (!draw) {
+                    // init
+                    const container = document.getElementsByClassName('container')[0]
+                    container.style.display = 'block'
+                    container.style.height = canvas.height + 'px'
+                    container.style.width = canvas.width + 'px' 
+                    const options = {
+                        container: container,
+                        bgImg: pdfBase64Arr[0]
+                    }
+                    draw = new EasyDrawingBoard(options);
+                } else {
+                    // draw 
+                    draw.config('bgImg', pdfBase64Arr[num - 1])
+                }
+            });
+            
             //Outpub current page
             document.querySelector("#page-num").textContent = num;
 
@@ -132,7 +150,7 @@ window.onload = function () {
         pdfDoc_ => {
 
             pdfDoc = pdfDoc_;
-            console.log(pdfDoc);
+            console.log('pdfDoc::', pdfDoc);
             document.querySelector("#page-count").textContent = pdfDoc.numPages;
             renderPage(pageNum);
         }
@@ -145,5 +163,3 @@ window.onload = function () {
 
 
 };
-
-

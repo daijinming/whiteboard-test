@@ -25,13 +25,20 @@
           background-color: skyblue;
         }
         .container{
-          display: inline-block;
+          display: none;
           position: relative;
           top: 0;
           z-index: 100;
-          border: 5px solid #eee;
-          width: 900px;
-          height: 1000px;
+          /* border: 5px solid #eee; */
+          border: 1px solid #eee;
+        }
+        canvas {
+          border: 1px solid #eee;
+        }
+        #pafjs {
+          position: absolute;
+          top: 250px;
+          left: -9999px;
         }
         
         .eraserSize,
@@ -60,6 +67,7 @@
         <button class="btn" id="circle">圆形</button>
         <button class="btn" id="arrow">箭头</button>
         <button class="btn" id="text">文字</button>
+        <button class="btn" id="undo">撤回</button>
       </div>
       <div>
         <label>线条颜色 <input id="lineColor" type="color" value="#f00f00"></label>
@@ -91,6 +99,7 @@
         </span>
     </div>
       <div class="container"></div>
+      <canvas id="pafjs"></canvas>
      
     </body>
     <script>
